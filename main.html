@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cultural Kitchen Connect</title>
+    <style>
+        :root {
+            --bg-warm: #f4ebe1;
+            --clay-pot: #c86b45;
+            --text-dark: #4a2c2a;
+            --accent-yellow: #f4c430;
+            --ui-bg: #fffbf7;
+            --border-color: #d3bca6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: #2c1a19;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        /* Mobile Portrait Canvas */
+        #game-container {
+            width: 390px;
+            height: 844px;
+            background-color: var(--bg-warm);
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 8px solid #3d2523;
+        }
+
+        /* Top Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            height: 100px;
+            background: linear-gradient(to bottom, rgba(244,235,225,1), rgba(244,235,225,0));
+            z-index: 10;
+        }
+
+        .character-chef {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 55px;
+            height: 55px;
+            background-color: #e09f67;
+            border-radius: 50%;
+            border: 3px solid var(--clay-pot);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .bubble {
+            background: var(--ui-bg);
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: bold;
+            border: 2px solid var(--border-color);
+            max-width: 180px;
+            position: relative;
+            box-shadow: 0 4px 0px var(--border-color);
+        }
+
+        .score-display {
+            background: var(--clay-pot);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 4px 0px #944829;
+        }
+
+        /* Main Cooking Area */
+        .cooking-zone {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pot-container {
+            width: 220px;
+            height: 220px;
+            background: var(--clay-pot);
+            border-radius: 50% 50% 40% 40%;
+            position: relative;
+            border: 8px solid #a05232;
+            box-shadow: inset 0 -15px 0 rgba(0,0,0,0.15), 0 15px 25px rgba(0,0,0,0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .pot-container.hovered {
+            transform: scale(1.08);
+            background: #d8774d;
+        }
+
+        .pot-rim {
+            position: absolute;
+            top: -5px;
+            width: 230px;
+            height: 25px;
+            background: #b55e39;
+            border-radius: 20px;
+            border: 4px solid #a05232;
+        }
+
+        .pot-interior {
+            width: 160px;
+            height: 160px;
+            background: #5c2e1b;
+            border-radius: 50%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            padding: 15px;
+            overflow: hidden;
+        }
+
+        /* Ingredients Side Menu */
+        .ingredients-side-menu {
+            position: absolute;
+            right: 15px;
+            top: 120px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 5;
+        }
+
+        .kebab-button {
+            width: 45px;
+            height: 45px;
+            background: var(--ui-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            box-shadow: 0 4px 0px var(--border-color);
+        }
+
+        .kebab-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--text-dark);
+            border-radius: 50%;
+        }
+
+        .ingredient-shelf {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: rgba(255, 251, 247, 0.85);
+            padding: 10px;
+            border-radius: 20px;
+            border: 2px solid var(--border-color);
+            backdrop-filter: blur(5px);
+        }
+
+        .ingredient {
+            width: 50px;
+            height: 50px;
+            background: var(--ui-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: grab;
+            box-shadow: 0 4px 0px var(--border-color);
+            transition: transform 0.1s;
+            touch-action: none;
+        }
+
+        .ingredient:active {
+            cursor: grabbing;
+            transform: scale(1.1);
+        }
+
+        /* Bottom Dialog Menu */
+        .bottom-ui {
+            background: var(--ui-bg);
+            border-top: 4px solid var(--border-color);
+            padding: 20px;
+            border-radius: 24px 24px 0 0;
+            box-shadow: 0 -10px 20px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+
+        .bottom-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .hamburger-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            width: 24px;
+        }
+
+        .hamburger-bar {
+            height: 3px;
+            width: 100%;
+            background-color: var(--text-dark);
+            border-radius: 2px;
+        }
+
+        .dish-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .tag-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .tag {
+            background: #f7e6c4;
+            color: #b07219;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border: 1px solid #e2cb99;
+        }
+
+        .dish-description {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #614644;
+            margin-bottom: 15px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: #5ca374;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #3d7351;
+        }
+
+        .submit-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #3d7351;
+        }
+
+        /* Profile Modal/Overlay */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(44, 26, 25, 0.85);
+            z-index: 100;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal {
+            background: var(--ui-bg);
+            width: 100%;
+            border-radius: 24px;
+            padding: 25px;
+            border: 4px solid var(--border-color);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .modal h3 {
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 22px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            font-size: 14px;
+            background: #fff;
+        }
+
+        /* Profile Result Swap Card */
+        .profile-card {
+            background: #fdfaf4;
+            border: 3px dashed var(--clay-pot);
+            border-radius: 16px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid var(--bg-warm);
+            padding-bottom: 8px;
+        }
+
+        /* Floating tiny items inside pot */
+        .pot-item {
+            font-size: 20px;
+            animation: simmer 1s ease-in-out infinite alternate;
+        }
+
+        @keyframes simmer {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-5px) rotate(5deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <div class="header">
+            <div class="character-chef">
+                <div class="avatar">👩🏽‍🍳</div>
+                <div class="bubble" id="chef-bubble">Let's craft this beautiful mashup! Drag ingredients into the pot.</div>
+            </div>
+            <div class="score-display" id="score">0 pts</div>
+        </div>
+
+        <div class="cooking-zone">
+            <div class="pot-container" id="cooking-pot">
+                <div class="pot-rim"></div>
+                <div class="pot-interior" id="pot-interior">
+                    </div>
+            </div>
+
+            <div class="ingredients-side-menu">
+                <div class="kebab-button">
+                    <div class="kebab-dot"></div>
+                    <div class="kebab-dot"></div>
+                    <div class="kebab-dot"></div>
+                </div>
+                <div class="ingredient-shelf" id="shelf">
+                    </div>
+            </div>
+        </div>
+
+        <div class="bottom-ui">
+            <div class="bottom-header">
+                <div class="dish-title" id="dish-title">Loading Recipe...</div>
+                <div class="hamburger-menu">
+                    <div class="hamburger-bar"></div>
+                    <div class="hamburger-bar"></div>
+                    <div class="hamburger-bar"></div>
+                </div>
+            </div>
+            <div class="tag-container" id="tags">
+                </div>
+            <div class="dish-description" id="dish-desc">
+                ...
+            </div>
+            <button class="submit-btn" id="serve-btn">SERVE DISH ✨</button>
+        </div>
+
+        <div class="overlay" id="form-overlay">
+            <div class="modal">
+                <h3>Dish Completed! 🎉</h3>
+                <div class="form-group">
+                    <label>Your Name / Nickname</label>
+                    <input type="text" id="p-name" placeholder="e.g., Diya" required>
+                </div>
+                <div class="form-group">
+                    <label>Your Culture/Origin</label>
+                    <input type="text" id="p-culture" placeholder="e.g., Malaysian-Tamil" required>
+                </div>
+                <div class="form-group">
+                    <label>Your Favorite Food</label>
+                    <input type="text" id="p-food" placeholder="e.g., Homemade Biryani" required>
+                </div>
+                <button class="submit-btn" id="save-profile-btn" style="background: var(--clay-pot); box-shadow: 0 4px 0 #944829;">Share & Swap Profiles</button>
+            </div>
+        </div>
+
+        <div class="overlay" id="peer-overlay">
+            <div class="modal">
+                <h3>Connected Kitchens! 🌏</h3>
+                <p style="font-size: 13px; margin-bottom: 10px;">You made this dish, and so did someone else across the world!</p>
+                
+                <div class="profile-card" id="peer-card">
+                    </div>
+
+                <button class="submit-btn" id="next-level-btn" style="margin-top: 15px;">Cook Next Dish! 🍳</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Game Data & Recipes
+        const recipes = [
+            {
+                title: "Gobi Manchurian",
+                tags: ["Indian-Chinese Fusion", "Vegetarian"],
+                desc: "A beautiful fusion born in Kolkata! Crispy cauliflower tossed in tangy, savory Chinese sauces with classic Indian aromatics.",
+                required: ["🥦", "🧄", "🌶️", "🍾"], // Cauliflower, Garlic, Chili, Soy Sauce
+                hint: "I need Cauliflower, Garlic, Chili, and Soy Sauce!"
+            },
+            {
+                title: "Halal Snack Pack (HSP)",
+                tags: ["Halal", "Australian-Middle Eastern"],
+                desc: "A legendary Australian comfort food mashup! Halal certified meat over hot chips, loaded with cheese and the holy trinity of sauces.",
+                required: ["🥩", "🍟", "🧀", "🍯"], // Meat, Fries, Cheese, Sauce
+                hint: "Find Halal Meat, Fries, Cheese, and Sweet Sauce!"
+            }
+        ];
+
+        const ingredientsPool = [
+            { icon: "🥦", name: "Cauliflower" },
+            { icon: "🧄", name: "Garlic" },
+            { icon: "🌶️", name: "Chili" },
+            { icon: "🍾", name: "Soy Sauce" },
+            { icon: "🥩", name: "Halal Meat" },
+            { icon: "🍟", name: "Fries" },
+            { icon: "🧀", name: "Cheese" },
+            { icon: "🍯", name: "Sweet Sauce" },
+            { icon: "🍤", name: "Prawn" },
+            { icon: "🧅", name: "Onion" }
+        ];
+
+        // Simulated Peer Profiles mapping to recipes
+        const peerProfiles = [
+            { name: "Aarav", culture: "Indo-Canadian", favFood: "Hakka Noodles", matchIndex: 0 },
+            { name: "Zayd", culture: "Lebanese-Aussie", favFood: "Chicken Shawarma Wrap", matchIndex: 1 }
+        ];
+
+        let currentRecipeIndex = 0;
+        let score = 0;
+        let addedIngredients = [];
+
+        // DOM elements
+        const shelf = document.getElementById('shelf');
+        const pot = document.getElementById('cooking-pot');
+        const potInterior = document.getElementById('pot-interior');
+        const chefBubble = document.getElementById('chef-bubble');
+        const scoreDisplay = document.getElementById('score');
+        const dishTitle = document.getElementById('dish-title');
+        const tagsContainer = document.getElementById('tags');
+        const dishDesc = document.getElementById('dish-desc');
+        const serveBtn = document.getElementById('serve-btn');
+        
+        // Overlays
+        const formOverlay = document.getElementById('form-overlay');
+        const peerOverlay = document.getElementById('peer-overlay');
+        const saveProfileBtn = document.getElementById('save-profile-btn');
+        const nextLevelBtn = document.getElementById('next-level-btn');
+        const peerCard = document.getElementById('peer-card');
+
+        // Initialize Shelf
+        function initShelf() {
+            shelf.innerHTML = '';
+            ingredientsPool.forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'ingredient';
+                el.innerText = item.icon;
+                el.setAttribute('draggable', 'true');
+                el.setAttribute('data-icon', item.icon);
+                
+                // Drag Events
+                el.addEventListener('dragstart', dragStart);
+                
+                // Mobile Touch Events
+                el.addEventListener('touchstart', touchStart, { passive: false });
+                el.addEventListener('touchmove', touchMove, { passive: false });
+                el.addEventListener('touchend', touchEnd);
+
+                shelf.appendChild(el);
+            });
+        }
+
+        // Load Recipe
+        function loadRecipe(index) {
+            currentRecipeIndex = index;
+            const recipe = recipes[index];
+            dishTitle.innerText = recipe.title;
+            dishDesc.innerText = recipe.desc;
+            chefBubble.innerText = recipe.hint;
+            potInterior.innerHTML = '';
+            addedIngredients = [];
+            
+            tagsContainer.innerHTML = '';
+            recipe.tags.forEach(tag => {
+                const t = document.createElement('span');
+                t.className = 'tag';
+                t.innerText = tag;
+                tagsContainer.appendChild(t);
+            });
+        }
+
+        // Drag & Drop Mechanics
+        let draggedItem = null;
+
+        function dragStart(e) {
+            draggedItem = e.target;
+        }
+
+        pot.addEventListener('dragover', (e) => e.preventDefault());
+        pot.addEventListener('dragenter', () => pot.classList.add('hovered'));
+        pot.addEventListener('dragleave', () => pot.classList.remove('hovered'));
+        pot.addEventListener('drop', () => {
+            pot.classList.remove('hovered');
+            if (draggedItem) {
+                dropIngredient(draggedItem.getAttribute('data-icon'));
+            }
+        });
+
+        // Touch handling for mobile devices
+        let activeTouchElement = null;
+
+        function touchStart(e) {
+            activeTouchElement = e.target;
+            e.target.style.position = 'absolute';
+            e.target.style.zIndex = '1000';
+        }
+
+        function touchMove(e) {
+            if (!activeTouchElement) return;
+            e.preventDefault();
+            const touch = e.touches[0];
+            
+            // Center the element under finger
+            activeTouchElement.style.left = (touch.clientX - 25) + 'px';
+            activeTouchElement.style.top = (touch.clientY - 25) + 'px';
+        }
+
+        function touchEnd(e) {
+            if (!activeTouchElement) return;
+            
+            const potRect = pot.getBoundingClientRect();
+            const touch = e.changedTouches[0];
+
+            // Reset positioning rules safely back into relative flow if needed
+            activeTouchElement.style.position = 'static';
+            
+            // Check bounding collisions with the pot
+            if (touch.clientX >= potRect.left && touch.clientX <= potRect.right &&
+                touch.clientY >= potRect.top && touch.clientY <= potRect.bottom) {
+                dropIngredient(activeTouchElement.getAttribute('data-icon'));
+            }
+            
+            activeTouchElement = null;
+            initShelf(); // Refresh layout
+        }
+
+        function dropIngredient(icon) {
+            if (!addedIngredients.includes(icon)) {
+                addedIngredients.push(icon);
+                const item = document.createElement('div');
+                item.className = 'pot-item';
+                item.innerText = icon;
+                potInterior.appendChild(item);
+                
+                // Tiny visual response inside the bubble
+                chefBubble.innerText = "Yum! Keep tossing them in!";
+            }
+        }
+
+       // Recipe Submission validation (Updated with Frown & Reset)
+serveBtn.addEventListener('click', () => {
+    const currentRecipe = recipes[currentRecipeIndex];
+    const hasAll = currentRecipe.required.every(ing => addedIngredients.includes(ing));
+    const chefAvatar = document.querySelector('.character-chef .avatar');
+
+    if (hasAll) {
+        score += 100;
+        scoreDisplay.innerText = `${score} pts`;
+        formOverlay.style.display = 'flex';
+    } else {
+        // 1. Make the chef frown
+        chefAvatar.innerText = "😞"; 
+        chefBubble.innerText = "Oh no, that's not quite right! Let's clear the pot and try again.";
+        
+        // 2. Temporarily disable the button during reset transition
+        serveBtn.disabled = true;
+        serveBtn.style.opacity = "0.5";
+
+        // 3. Wait 2 seconds, then reset the recipe/pot
+        setTimeout(() => {
+            // Restore chef avatar to normal cooking face
+            chefAvatar.innerText = "👩🏽‍🍳"; 
+            
+            // Clear the pot and array data
+            potInterior.innerHTML = '';
+            addedIngredients = [];
+            
+            // Reset chef bubble back to original hint
+            chefBubble.innerText = currentRecipe.hint;
+            
+            // Re-enable serve button
+            serveBtn.disabled = false;
+            serveBtn.style.opacity = "1";
+        }, 2000); // 2000 milliseconds = 2 seconds
+    }
+});
+
+        // Save profile and reveal Match Profile card
+        saveProfileBtn.addEventListener('click', () => {
+            const nameVal = document.getElementById('p-name').value || "Friend";
+            const cultureVal = document.getElementById('p-culture').value || "Global Citizen";
+            
+            // Find corresponding structural match profile
+            const peer = peerProfiles.find(p => p.matchIndex === currentRecipeIndex) || peerProfiles[0];
+            
+            peerCard.innerHTML = `
+                <div class="profile-header">
+                    <div class="avatar">🍳</div>
+                    <div>
+                        <strong>${peer.name}</strong> <br>
+                        <span style="font-size:12px; color:#a05232;">Culture: ${peer.culture}</span>
+                    </div>
+                </div>
+                <p style="font-size: 13px;"><strong>Favorite dish:</strong> ${peer.favFood}</p>
+                <p style="font-size: 13px; margin-top:5px; color:#5ca374;">✨ They also cooked <strong>${recipes[currentRecipeIndex].title}</strong> just like you!</p>
+            `;
+
+            formOverlay.style.display = 'none';
+            peerOverlay.style.display = 'flex';
+        });
+
+        // Advance to next dish
+        nextLevelBtn.addEventListener('click', () => {
+            peerOverlay.style.display = 'none';
+            // Reset input values
+            document.getElementById('p-name').value = '';
+            document.getElementById('p-culture').value = '';
+            document.getElementById('p-food').value = '';
+            
+            // Move to next recipe circular loop
+            let nextIndex = (currentRecipeIndex + 1) % recipes.length;
+            loadRecipe(nextIndex);
+        });
+
+        // Start
+        initShelf();
+        loadRecipe(0);
+    </script>
+</body>
+</html>
