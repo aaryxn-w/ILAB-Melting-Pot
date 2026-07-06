@@ -515,46 +515,64 @@
         const nextLevelBtn = document.getElementById('next-level-btn');
         const peerCard = document.getElementById('peer-card');
 
-        // Initialize Shelf
-        function initShelf() {
-            shelf.innerHTML = '';
-            ingredientsPool.forEach(item => {
-                const el = document.createElement('div');
-                el.className = 'ingredient';
-                el.innerText = item.icon;
-                el.setAttribute('draggable', 'true');
-                el.setAttribute('data-icon', item.icon);
-                
-                // Drag Events
-                el.addEventListener('dragstart', dragStart);
-                
-                // Mobile Touch Events
-                el.addEventListener('touchstart', touchStart, { passive: false });
-                el.addEventListener('touchmove', touchMove, { passive: false });
-                el.addEventListener('touchend', touchEnd);
+       // Updated to dynamically accept whatever ingredients we want to show
+function initShelf(ingredientsToShow) {
+    shelf.innerHTML = '';
+    ingredientsToShow.forEach(icon => {
+        const el = document.createElement('div');
+        el.className = 'ingredient';
+        el.innerText = icon;
+        el.setAttribute('draggable', 'true');
+        el.setAttribute('data-icon', icon);
+        
+        // Drag Events
+        el.addEventListener('dragstart', dragStart);
+        
+        // Mobile Touch Events
+        el.addEventListener('touchstart', touchStart, { passive: false });
+        el.addEventListener('touchmove', touchMove, { passive: false });
+        el.addEventListener('touchend', touchEnd);
 
-                shelf.appendChild(el);
-            });
-        }
+        shelf.appendChild(el);
+    });
+}
 
-        // Load Recipe
-        function loadRecipe(index) {
-            currentRecipeIndex = index;
-            const recipe = recipes[index];
-            dishTitle.innerText = recipe.title;
-            dishDesc.innerText = recipe.desc;
-            chefBubble.innerText = recipe.hint;
-            potInterior.innerHTML = '';
-            addedIngredients = [];
-            
-            tagsContainer.innerHTML = '';
-            recipe.tags.forEach(tag => {
-                const t = document.createElement('span');
-                t.className = 'tag';
-                t.innerText = tag;
-                tagsContainer.appendChild(t);
-            });
-        }
+     // Updated to dynamically change the ingredients shelf per level
+function loadRecipe(index) {
+    currentRecipeIndex = index;
+    const recipe = recipes[index];
+    dishTitle.innerText = recipe.title;
+    dishDesc.innerText = recipe.desc;
+    chefBubble.innerText = recipe.hint;
+    potInterior.innerHTML = '';
+    addedIngredients = [];
+    
+    tagsContainer.innerHTML = '';
+    recipe.tags.forEach(tag => {
+        const t = document.createElement('span');
+        t.className = 'tag';
+        t.innerText = tag;
+        tagsContainer.appendChild(t);
+    });
+
+    // --- NEW DYNAMIC SHELF LOGIC ---
+    // Start with the required ingredients for this level
+    let levelIngredients = [...recipe.required];
+
+    // Pick 2 random decoy ingredients from the general pool that aren't required
+    const decoys = ingredientsPool
+        .filter(item => !recipe.required.includes(item.icon))
+        .map(item => item.icon);
+    
+    // Sort decoys randomly and pick the first two
+    const randomDecoys = decoys.sort(() => 0.5 - Math.random()).slice(0, 2);
+    
+    // Combine them and shuffle the final list so the correct answer isn't in a perfect row
+    levelIngredients = levelIngredients.concat(randomDecoys).sort(() => 0.5 - Math.random());
+
+    // Load the shelf with this level's custom mix!
+    initShelf(levelIngredients);
+}
 
         // Drag & Drop Mechanics
         let draggedItem = null;
@@ -608,7 +626,7 @@
             }
             
             activeTouchElement = null;
-            initShelf(); // Refresh layout
+            loadRecipe(currentRecipeIndex);// do not reset on mobile release, keep the shelf intact 
         }
 
         function dropIngredient(icon) {
@@ -700,8 +718,7 @@ serveBtn.addEventListener('click', () => {
         });
 
         // Start
-        initShelf();
-        loadRecipe(0);
+       loadRecipe(0);
     </script>
 </body>
 </html>
