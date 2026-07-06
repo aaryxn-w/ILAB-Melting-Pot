@@ -149,16 +149,22 @@
             overflow: hidden;
         }
 
-        /* Ingredients Side Menu */
-        .ingredients-side-menu {
-            position: absolute;
-            right: 15px;
-            top: 120px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            z-index: 5;
-        }
+    /* Ingredients Side Menu - Fixed to pivot from the middle and layer on top */
+.ingredients-side-menu {
+    position: absolute;
+    right: 15px;
+    
+    /* 1. This centers the container vertically in the middle of the cooking zone */
+    top: 50%;
+    transform: translateY(-50%);
+    
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    
+    /* 2. Increased z-index to 20 so it layers over the bottom-ui (which is z-index 10) */
+    z-index: 20; 
+}
 
         .kebab-button {
             width: 45px;
@@ -456,24 +462,25 @@
     </div>
 
     <script>
-        // Game Data & Recipes
-        const recipes = [
-            {
-                title: "Gobi Manchurian",
-                tags: ["Indian-Chinese Fusion", "Vegetarian"],
-                desc: "A beautiful fusion born in Kolkata! Crispy cauliflower tossed in tangy, savory Chinese sauces with classic Indian aromatics.",
-                required: ["🥦", "🧄", "🌶️", "🍾"], // Cauliflower, Garlic, Chili, Soy Sauce
-                hint: "I need Cauliflower, Garlic, Chili, and Soy Sauce!"
-            },
-            {
-                title: "Halal Snack Pack (HSP)",
-                tags: ["Halal", "Australian-Middle Eastern"],
-                desc: "A legendary Australian comfort food mashup! Halal certified meat over hot chips, loaded with cheese and the holy trinity of sauces.",
-                required: ["🥩", "🍟", "🧀", "🍯"], // Meat, Fries, Cheese, Sauce
-                hint: "Find Halal Meat, Fries, Cheese, and Sweet Sauce!"
-            }
-        ];
-
+      // Game Data & Recipes with Explicit Right and Wrong ingredients
+const recipes = [
+    {
+        title: "Gobi Manchurian",
+        tags: ["Indian-Chinese Fusion", "Vegetarian"],
+        desc: "A beautiful fusion born in Kolkata! Crispy cauliflower tossed in tangy, savory Chinese sauces with classic Indian aromatics.",
+        required: ["🥦", "🧄", "🌶️", "🍾"], // RIGHT options
+        wrong: ["🍤", "🥩", "🧀"],          // WRONG options curated for this level
+        hint: "I need Cauliflower, Garlic, Chili, and Soy Sauce!"
+    },
+    {
+        title: "Halal Snack Pack (HSP)",
+        tags: ["Halal", "Australian-Middle Eastern"],
+        desc: "A legendary Australian comfort food mashup! Halal certified meat over hot chips, loaded with cheese and the holy trinity of sauces.",
+        required: ["🥩", "🍟", "🧀", "🍯"], // RIGHT options
+        wrong: ["🥦", "🍤", "🧅"],          // WRONG options curated for this level
+        hint: "Find Halal Meat, Fries, Cheese, and Sweet Sauce!"
+    }
+];
         const ingredientsPool = [
             { icon: "🥦", name: "Cauliflower" },
             { icon: "🧄", name: "Garlic" },
@@ -537,8 +544,7 @@ function initShelf(ingredientsToShow) {
     });
 }
 
-     // Updated to dynamically change the ingredients shelf per level
-function loadRecipe(index) {
+  function loadRecipe(index) {
     currentRecipeIndex = index;
     const recipe = recipes[index];
     dishTitle.innerText = recipe.title;
@@ -555,22 +561,14 @@ function loadRecipe(index) {
         tagsContainer.appendChild(t);
     });
 
-    // --- NEW DYNAMIC SHELF LOGIC ---
-    // Start with the required ingredients for this level
-    let levelIngredients = [...recipe.required];
-
-    // Pick 2 random decoy ingredients from the general pool that aren't required
-    const decoys = ingredientsPool
-        .filter(item => !recipe.required.includes(item.icon))
-        .map(item => item.icon);
+    // Combine this level's specific right and wrong ingredients
+    // Using the spread operator (...) to combine both arrays
+    let levelIngredients = [...recipe.required, ...recipe.wrong];
     
-    // Sort decoys randomly and pick the first two
-    const randomDecoys = decoys.sort(() => 0.5 - Math.random()).slice(0, 2);
-    
-    // Combine them and shuffle the final list so the correct answer isn't in a perfect row
-    levelIngredients = levelIngredients.concat(randomDecoys).sort(() => 0.5 - Math.random());
+    // Shuffle the combined list randomly so right and wrong answers are mixed up
+    levelIngredients.sort(() => 0.5 - Math.random());
 
-    // Load the shelf with this level's custom mix!
+    // Render the final mixed shelf!
     initShelf(levelIngredients);
 }
 
