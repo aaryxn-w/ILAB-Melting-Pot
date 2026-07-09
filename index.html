@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cultural Kitchen Connect</title>
+    <title>Cultural Kitchen Connect: Catch Edition</title>
     <style>
         :root {
             --bg-warm: #f4ebe1;
@@ -45,14 +45,14 @@
             border: 8px solid #3d2523;
         }
 
-        /* Top Header */
+        /* Top Header Panel */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px;
-            height: 100px;
-            background: linear-gradient(to bottom, rgba(244,235,225,1), rgba(244,235,225,0));
+            padding: 15px;
+            background: var(--ui-bg);
+            border-bottom: 3px solid var(--border-color);
             z-index: 10;
         }
 
@@ -63,251 +63,183 @@
         }
 
         .avatar {
-            width: 55px;
-            height: 55px;
+            width: 50px;
+            height: 50px;
             background-color: #e09f67;
             border-radius: 50%;
             border: 3px solid var(--clay-pot);
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 28px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            font-size: 24px;
         }
 
         .bubble {
-            background: var(--ui-bg);
+            background: white;
             padding: 8px 12px;
             border-radius: 12px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: bold;
             border: 2px solid var(--border-color);
-            max-width: 180px;
-            position: relative;
-            box-shadow: 0 4px 0px var(--border-color);
+            max-width: 190px;
         }
 
         .score-display {
             background: var(--clay-pot);
             color: white;
-            padding: 8px 16px;
+            padding: 6px 12px;
             border-radius: 20px;
             font-weight: bold;
-            font-size: 16px;
-            box-shadow: 0 4px 0px #944829;
+            font-size: 14px;
         }
 
-        /* Main Cooking Area */
-        .cooking-zone {
+        /* Spawner Span Panel (Directly under dialogue) */
+        .spawner-panel {
+            background: #ebdccb;
+            padding: 10px;
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 2px solid var(--border-color);
+            z-index: 9;
+        }
+
+        .spawner-btn {
+            background: var(--ui-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            width: 45px;
+            height: 45px;
+            font-size: 22px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 3px 0 var(--border-color);
+        }
+
+        .spawner-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 var(--border-color);
+        }
+
+        /* Catching Window */
+        .game-space {
             flex: 1;
             position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .pot-container {
-            width: 220px;
-            height: 220px;
-            background: var(--clay-pot);
-            border-radius: 50% 50% 40% 40%;
-            position: relative;
-            border: 8px solid #a05232;
-            box-shadow: inset 0 -15px 0 rgba(0,0,0,0.15), 0 15px 25px rgba(0,0,0,0.15);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: transform 0.2s;
-        }
-
-        .pot-container.hovered {
-            transform: scale(1.08);
-            background: #d8774d;
-        }
-
-        .pot-rim {
-            position: absolute;
-            top: -5px;
-            width: 230px;
-            height: 25px;
-            background: #b55e39;
-            border-radius: 20px;
-            border: 4px solid #a05232;
-        }
-
-        .pot-interior {
-            width: 160px;
-            height: 160px;
-            background: #5c2e1b;
-            border-radius: 50%;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            gap: 5px;
-            padding: 15px;
+            background: #fdf5ec;
             overflow: hidden;
         }
 
-    /* Ingredients Side Menu - Fixed to pivot from the middle and layer on top */
-.ingredients-side-menu {
-    position: absolute;
-    right: 15px;
-    
-    /* 1. This centers the container vertically in the middle of the cooking zone */
-    top: 50%;
-    transform: translateY(-50%);
-    
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    
-    /* 2. Increased z-index to 20 so it layers over the bottom-ui (which is z-index 10) */
-    z-index: 20; 
-}
-
-        .kebab-button {
-            width: 45px;
-            height: 45px;
-            background: var(--ui-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-            box-shadow: 0 4px 0px var(--border-color);
-        }
-
-        .kebab-dot {
-            width: 6px;
-            height: 6px;
-            background: var(--text-dark);
-            border-radius: 50%;
-        }
-
-        .ingredient-shelf {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            background: rgba(255, 251, 247, 0.85);
-            padding: 10px;
-            border-radius: 20px;
-            border: 2px solid var(--border-color);
-            backdrop-filter: blur(5px);
-        }
-
-        .ingredient {
-            width: 50px;
-            height: 50px;
-            background: var(--ui-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 14px;
+        .falling-element {
+            position: absolute;
+            font-size: 32px;
+            width: 40px;
+            height: 40px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 24px;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* Pot Slideable Span Layer */
+        .pot-row {
+            position: absolute;
+            bottom: 120px;
+            width: 100%;
+            height: 70px;
+            pointer-events: none;
+        }
+
+        #slide-pot {
+            position: absolute;
+            left: 145px; /* Center initial */
+            width: 100px;
+            height: 60px;
+            background: var(--clay-pot);
+            border-radius: 0 0 30px 30px;
+            border: 4px solid #a05232;
             cursor: grab;
-            box-shadow: 0 4px 0px var(--border-color);
-            transition: transform 0.1s;
+            pointer-events: auto;
             touch-action: none;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
 
-        .ingredient:active {
+        #slide-pot:active {
             cursor: grabbing;
-            transform: scale(1.1);
         }
 
-        /* Bottom Dialog Menu */
-        .bottom-ui {
+        .pot-lip {
+            width: 108px;
+            height: 12px;
+            background: #b55e39;
+            position: absolute;
+            top: -10px;
+            left: -8px;
+            border-radius: 6px;
+            border: 3px solid #a05232;
+        }
+
+        /* Pot Contents Display Row */
+        .contents-row {
+            position: absolute;
+            bottom: 75px;
+            width: 100%;
+            height: 40px;
+            background: rgba(74, 44, 42, 0.08);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            padding: 0 10px;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        .collected-indicator {
+            font-size: 18px;
+            background: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Bottom Keyword Capsules Section */
+        .bottom-capsule-bar {
+            height: 70px;
             background: var(--ui-bg);
-            border-top: 4px solid var(--border-color);
-            padding: 20px;
-            border-radius: 24px 24px 0 0;
-            box-shadow: 0 -10px 20px rgba(0,0,0,0.05);
+            border-top: 3px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px;
             z-index: 10;
         }
 
-        .bottom-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .hamburger-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-            width: 24px;
-        }
-
-        .hamburger-bar {
-            height: 3px;
-            width: 100%;
-            background-color: var(--text-dark);
-            border-radius: 2px;
-        }
-
-        .dish-title {
-            font-size: 20px;
-            font-weight: 800;
-            color: var(--text-dark);
-        }
-
-        .tag-container {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .tag {
+        .capsule {
             background: #f7e6c4;
             color: #b07219;
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 11px;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
             font-weight: bold;
             text-transform: uppercase;
-            border: 1px solid #e2cb99;
+            border: 2px solid #e2cb99;
+            box-shadow: 0 2px 0px #e2cb99;
         }
 
-        .dish-description {
-            font-size: 14px;
-            line-height: 1.5;
-            color: #614644;
-            margin-bottom: 15px;
-        }
-
-        .submit-btn {
-            width: 100%;
-            background: #5ca374;
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 14px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 0 #3d7351;
-        }
-
-        .submit-btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 #3d7351;
-        }
-
-        /* Profile Modal/Overlay */
+        /* End Screen Overlay Modals */
         .overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(44, 26, 25, 0.85);
+            background: rgba(44, 26, 25, 0.9);
             z-index: 100;
             display: none;
             justify-content: center;
@@ -321,64 +253,59 @@
             border-radius: 24px;
             padding: 25px;
             border: 4px solid var(--border-color);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-
-        .modal h3 {
-            margin-bottom: 15px;
             text-align: center;
-            font-size: 22px;
         }
 
-        .form-group {
-            margin-bottom: 12px;
+        .modal h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
         }
 
-        .form-group label {
-            display: block;
-            font-size: 12px;
+        .dish-spotlight {
+            font-size: 20px;
             font-weight: bold;
-            margin-bottom: 5px;
-            text-transform: uppercase;
+            color: var(--clay-pot);
+            margin-bottom: 15px;
         }
 
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            border-radius: 10px;
-            border: 2px solid var(--border-color);
+        .modal p {
             font-size: 14px;
-            background: #fff;
-        }
-
-        /* Profile Result Swap Card */
-        .profile-card {
-            background: #fdfaf4;
-            border: 3px dashed var(--clay-pot);
-            border-radius: 16px;
-            padding: 15px;
-            margin-top: 15px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #5c413f;
             text-align: left;
         }
 
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-            border-bottom: 2px solid var(--bg-warm);
-            padding-bottom: 8px;
+        .loc-box {
+            background: #eef7f1;
+            border: 2px solid #a3d9b7;
+            color: #27613d;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            text-align: left;
         }
 
-        /* Floating tiny items inside pot */
-        .pot-item {
-            font-size: 20px;
-            animation: simmer 1s ease-in-out infinite alternate;
+        .btn-action {
+            width: 100%;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
         }
 
-        @keyframes simmer {
-            0% { transform: translateY(0) rotate(0deg); }
-            100% { transform: translateY(-5px) rotate(5deg); }
+        .btn-success {
+            background: #5ca374;
+            box-shadow: 0 4px 0 #3d7351;
+        }
+
+        .btn-retry {
+            background: var(--clay-pot);
+            box-shadow: 0 4px 0 #944829;
         }
     </style>
 </head>
@@ -387,336 +314,287 @@
     <div id="game-container">
         <div class="header">
             <div class="character-chef">
-                <div class="avatar">👩🏽‍🍳</div>
-                <div class="bubble" id="chef-bubble">Let's craft this beautiful mashup! Drag ingredients into the pot.</div>
+                <div class="avatar" id="chef-avatar">👩🏽‍🍳</div>
+                <div class="bubble" id="chef-bubble">Loading recipe clues...</div>
             </div>
             <div class="score-display" id="score">0 pts</div>
         </div>
 
-        <div class="cooking-zone">
-            <div class="pot-container" id="cooking-pot">
-                <div class="pot-rim"></div>
-                <div class="pot-interior" id="pot-interior">
-                    </div>
+        <div class="spawner-panel" id="spawner-bar">
             </div>
 
-            <div class="ingredients-side-menu">
-                <div class="kebab-button">
-                    <div class="kebab-dot"></div>
-                    <div class="kebab-dot"></div>
-                    <div class="kebab-dot"></div>
+        <div class="game-space" id="drop-window">
+            
+            <div class="pot-row">
+                <div id="slide-pot">
+                    <div class="pot-lip"></div>
                 </div>
-                <div class="ingredient-shelf" id="shelf">
-                    </div>
             </div>
+
+            <div class="contents-row" id="contents-display">
+                </div>
         </div>
 
-        <div class="bottom-ui">
-            <div class="bottom-header">
-                <div class="dish-title" id="dish-title">Loading Recipe...</div>
-                <div class="hamburger-menu">
-                    <div class="hamburger-bar"></div>
-                    <div class="hamburger-bar"></div>
-                    <div class="hamburger-bar"></div>
-                </div>
+        <div class="bottom-capsule-bar" id="capsules-bar">
             </div>
-            <div class="tag-container" id="tags">
-                </div>
-            <div class="dish-description" id="dish-desc">
-                ...
-            </div>
-            <button class="submit-btn" id="serve-btn">SERVE DISH ✨</button>
-        </div>
 
-        <div class="overlay" id="form-overlay">
+        <div class="overlay" id="win-overlay">
             <div class="modal">
-                <h3>Dish Completed! 🎉</h3>
-                <div class="form-group">
-                    <label>Your Name / Nickname</label>
-                    <input type="text" id="p-name" placeholder="e.g., Diya" required>
-                </div>
-                <div class="form-group">
-                    <label>Your Culture/Origin</label>
-                    <input type="text" id="p-culture" placeholder="e.g., Malaysian-Tamil" required>
-                </div>
-                <div class="form-group">
-                    <label>Your Favorite Food</label>
-                    <input type="text" id="p-food" placeholder="e.g., Homemade Biryani" required>
-                </div>
-                <button class="submit-btn" id="save-profile-btn" style="background: var(--clay-pot); box-shadow: 0 4px 0 #944829;">Share & Swap Profiles</button>
-            </div>
-        </div>
-
-        <div class="overlay" id="peer-overlay">
-            <div class="modal">
-                <h3>Connected Kitchens! 🌏</h3>
-                <p style="font-size: 13px; margin-bottom: 10px;">You made this dish, and so did someone else across the world!</p>
+                <h2 style="color: #27613d;">Dish Perfected! 🎉</h2>
+                <div class="dish-spotlight" id="win-title">Dish Name</div>
+                <p id="win-desc">Cultural explanation summary text...</p>
                 
-                <div class="profile-card" id="peer-card">
-                    </div>
+                <div class="loc-box">
+                    <strong>🇸🇬 Find it in Singapore:</strong>
+                    <div id="win-location" style="margin-top: 5px;">Hawker Centre / Restaurant Address Details</div>
+                </div>
 
-                <button class="submit-btn" id="next-level-btn" style="margin-top: 15px;">Cook Next Dish! 🍳</button>
+                <button class="btn-action btn-success" id="next-level-btn">Cook Next Dish! 🍳</button>
+            </div>
+        </div>
+
+        <div class="overlay" id="lose-overlay">
+            <div class="modal">
+                <h2 style="color: #c86b45;">Oh No! 😞</h2>
+                <div class="dish-spotlight">Recipe Failed</div>
+                <p style="text-align: center;">Those weren't quite the right options for this cross-cultural fusion. Let's try matching the dish's special characteristics capsules!</p>
+                
+                <button class="btn-action btn-retry" id="retry-btn">Try This Level Again 🔄</button>
             </div>
         </div>
 
     </div>
 
     <script>
-      // Game Data & Recipes with Explicit Right and Wrong ingredients
-const recipes = [
-    {
-        title: "Gobi Manchurian",
-        tags: ["Indian-Chinese Fusion", "Vegetarian"],
-        desc: "A beautiful fusion born in Kolkata! Crispy cauliflower tossed in tangy, savory Chinese sauces with classic Indian aromatics.",
-        required: ["🥦", "🧄", "🌶️", "🍾"], // RIGHT options
-        wrong: ["🍤", "🥩", "🧀"],          // WRONG options curated for this level
-        hint: "I need Cauliflower, Garlic, Chili, and Soy Sauce!"
-    },
-    {
-        title: "Halal Snack Pack (HSP)",
-        tags: ["Halal", "Australian-Middle Eastern"],
-        desc: "A legendary Australian comfort food mashup! Halal certified meat over hot chips, loaded with cheese and the holy trinity of sauces.",
-        required: ["🥩", "🍟", "🧀", "🍯"], // RIGHT options
-        wrong: ["🥦", "🍤", "🧅"],          // WRONG options curated for this level
-        hint: "Find Halal Meat, Fries, Cheese, and Sweet Sauce!"
-    }
-];
-        const ingredientsPool = [
-            { icon: "🥦", name: "Cauliflower" },
-            { icon: "🧄", name: "Garlic" },
-            { icon: "🌶️", name: "Chili" },
-            { icon: "🍾", name: "Soy Sauce" },
-            { icon: "🥩", name: "Halal Meat" },
-            { icon: "🍟", name: "Fries" },
-            { icon: "🧀", name: "Cheese" },
-            { icon: "🍯", name: "Sweet Sauce" },
-            { icon: "🍤", name: "Prawn" },
-            { icon: "🧅", name: "Onion" }
-        ];
-
-        // Simulated Peer Profiles mapping to recipes
-        const peerProfiles = [
-            { name: "Aarav", culture: "Indo-Canadian", favFood: "Hakka Noodles", matchIndex: 0 },
-            { name: "Zayd", culture: "Lebanese-Aussie", favFood: "Chicken Shawarma Wrap", matchIndex: 1 }
+        // Data Structure Layer
+        const recipes = [
+            {
+                title: "Gobi Manchurian",
+                tags: ["Indian-Chinese", "Vegetarian"],
+                desc: "A legendary cultural fusion born within Kolkata's historic Chinese community! It masterfully balances bold Indian aromatic bases with tangy Chinese cooking styles.",
+                location: "Maju Avenue (Serangoon Garden Estate) or custom Hakka Indian Restaurants around Little India!",
+                required: ["🥦", "🧄", "🌶️", "🍾"], 
+                wrong: ["🥩", "🍤", "🧀"],
+                hint: "Drop only: Cauliflower, Garlic, Chili, and Soy Sauce!"
+            },
+            {
+                title: "Halal Snack Pack (HSP)",
+                tags: ["Halal Certified", "Aus-Middle Eastern"],
+                desc: "An incredible modern comfort dish created down under! Crisp, gold french fries topped with seasoned halal meat cuts, melted layers of dairy, and aromatic signature sauces.",
+                location: "Available in Turkish Kebab outlets located along Arab Street and Haji Lane districts!",
+                required: ["🥩", "🍟", "🧀", "🍯"],
+                wrong: ["🥦", "🍤", "🧅"],
+                hint: "Drop only: Halal Meat, Fries, Cheese, and Sweet Sauce!"
+            }
         ];
 
         let currentRecipeIndex = 0;
         let score = 0;
-        let addedIngredients = [];
+        let collectedIngredients = [];
+        let itemFalling = false; // Ensures only one drops at a time
+        let gameLoopActive = true;
 
-        // DOM elements
-        const shelf = document.getElementById('shelf');
-        const pot = document.getElementById('cooking-pot');
-        const potInterior = document.getElementById('pot-interior');
+        // Element Selection
+        const spawnerBar = document.getElementById('spawner-bar');
+        const dropWindow = document.getElementById('drop-window');
+        const slidePot = document.getElementById('slide-pot');
+        const contentsDisplay = document.getElementById('contents-display');
+        const capsulesBar = document.getElementById('capsules-bar');
         const chefBubble = document.getElementById('chef-bubble');
+        const chefAvatar = document.getElementById('chef-avatar');
         const scoreDisplay = document.getElementById('score');
-        const dishTitle = document.getElementById('dish-title');
-        const tagsContainer = document.getElementById('tags');
-        const dishDesc = document.getElementById('dish-desc');
-        const serveBtn = document.getElementById('serve-btn');
-        
+
         // Overlays
-        const formOverlay = document.getElementById('form-overlay');
-        const peerOverlay = document.getElementById('peer-overlay');
-        const saveProfileBtn = document.getElementById('save-profile-btn');
-        const nextLevelBtn = document.getElementById('next-level-btn');
-        const peerCard = document.getElementById('peer-card');
+        const winOverlay = document.getElementById('win-overlay');
+        const loseOverlay = document.getElementById('lose-overlay');
 
-       // Updated to dynamically accept whatever ingredients we want to show
-function initShelf(ingredientsToShow) {
-    shelf.innerHTML = '';
-    ingredientsToShow.forEach(icon => {
-        const el = document.createElement('div');
-        el.className = 'ingredient';
-        el.innerText = icon;
-        el.setAttribute('draggable', 'true');
-        el.setAttribute('data-icon', icon);
-        
-        // Drag Events
-        el.addEventListener('dragstart', dragStart);
-        
-        // Mobile Touch Events
-        el.addEventListener('touchstart', touchStart, { passive: false });
-        el.addEventListener('touchmove', touchMove, { passive: false });
-        el.addEventListener('touchend', touchEnd);
-
-        shelf.appendChild(el);
-    });
-}
-
-  function loadRecipe(index) {
-    currentRecipeIndex = index;
-    const recipe = recipes[index];
-    dishTitle.innerText = recipe.title;
-    dishDesc.innerText = recipe.desc;
-    chefBubble.innerText = recipe.hint;
-    potInterior.innerHTML = '';
-    addedIngredients = [];
-    
-    tagsContainer.innerHTML = '';
-    recipe.tags.forEach(tag => {
-        const t = document.createElement('span');
-        t.className = 'tag';
-        t.innerText = tag;
-        tagsContainer.appendChild(t);
-    });
-
-    // Combine this level's specific right and wrong ingredients
-    // Using the spread operator (...) to combine both arrays
-    let levelIngredients = [...recipe.required, ...recipe.wrong];
-    
-    // Shuffle the combined list randomly so right and wrong answers are mixed up
-    levelIngredients.sort(() => 0.5 - Math.random());
-
-    // Render the final mixed shelf!
-    initShelf(levelIngredients);
-}
-
-        // Drag & Drop Mechanics
-        let draggedItem = null;
+        // Horizontal Pot Sliding Mechanics (Mouse & Touch Engine)
+        let isDragging = false;
+        let startX = 0;
+        let potLeft = 145;
+        const maxBoundary = 390 - 100; // Layout Width minus Pot Width
 
         function dragStart(e) {
-            draggedItem = e.target;
+            isDragging = true;
+            startX = (e.type === 'touchstart') ? e.touches[0].clientX : e.clientX;
+            potLeft = slidePot.offsetLeft;
         }
 
-        pot.addEventListener('dragover', (e) => e.preventDefault());
-        pot.addEventListener('dragenter', () => pot.classList.add('hovered'));
-        pot.addEventListener('dragleave', () => pot.classList.remove('hovered'));
-        pot.addEventListener('drop', () => {
-            pot.classList.remove('hovered');
-            if (draggedItem) {
-                dropIngredient(draggedItem.getAttribute('data-icon'));
+        function dragMove(e) {
+            if (!isDragging) return;
+            const currentX = (e.type === 'touchmove') ? e.touches[0].clientX : e.clientX;
+            const deltaX = currentX - startX;
+            let newLeft = potLeft + deltaX;
+
+            // Constrain parameters to mobile display walls
+            if (newLeft < 0) newLeft = 0;
+            if (newLeft > maxBoundary) newLeft = maxBoundary;
+
+            slidePot.style.left = newLeft + 'px';
+        }
+
+        function dragEnd() {
+            isDragging = false;
+        }
+
+        slidePot.addEventListener('mousedown', dragStart);
+        window.addEventListener('mousemove', dragMove);
+        window.addEventListener('mouseup', dragEnd);
+
+        slidePot.addEventListener('touchstart', dragStart, { passive: true });
+        window.addEventListener('touchmove', dragMove, { passive: false });
+        window.addEventListener('touchend', dragEnd);
+
+
+        // Initialize Level State Data Dynamic Loops
+        function loadLevel(index) {
+            currentRecipeIndex = index;
+            const recipe = recipes[index];
+            
+            // Clean interface slate
+            collectedIngredients = [];
+            contentsDisplay.innerHTML = '';
+            itemFalling = false;
+            gameLoopActive = true;
+            chefAvatar.innerText = "👩🏽‍🍳";
+            chefBubble.innerText = recipe.hint;
+
+            // Render lower characteristics capsules
+            capsulesBar.innerHTML = '';
+            recipe.tags.forEach(tag => {
+                const caps = document.createElement('span');
+                caps.className = 'capsule';
+                caps.innerText = tag;
+                capsulesBar.appendChild(caps);
+            });
+
+            // Setup top row Spawner Span buttons
+            spawnerBar.innerHTML = '';
+            const totalIngredients = [...recipe.required, ...recipe.wrong].sort(() => 0.5 - Math.random());
+            
+            totalIngredients.forEach(emoji => {
+                const btn = document.createElement('button');
+                btn.className = 'spawner-btn';
+                btn.innerText = emoji;
+                btn.onclick = () => spawnIngredient(emoji, btn);
+                spawnerBar.appendChild(btn);
+            });
+        }
+
+        // Falling Engine Logic Block
+        function spawnIngredient(emoji, buttonElement) {
+            // Guard conditions: don't spawn if an ingredient is active, or user caught wrong items already
+            if (itemFalling || !gameLoopActive) return;
+            itemFalling = true;
+
+            // Generate temporary drop asset
+            const element = document.createElement('div');
+            element.className = 'falling-element';
+            element.innerText = emoji;
+            element.setAttribute('data-icon', emoji);
+
+            // Calculate x axis position directly matching click trajectory origin
+            const btnRect = buttonElement.getBoundingClientRect();
+            const windowRect = dropWindow.getBoundingClientRect();
+            const spawnX = (btnRect.left + (btnRect.width / 2)) - windowRect.left - 20;
+
+            element.style.left = spawnX + 'px';
+            element.style.top = '0px';
+            dropWindow.appendChild(element);
+
+            let currentY = 0;
+            const fallSpeed = 4.5;
+
+            function fall() {
+                if (!gameLoopActive) {
+                    element.remove();
+                    return;
+                }
+
+                currentY += fallSpeed;
+                element.style.top = currentY + 'px';
+
+                // Physical Boundary Collisions Tracking Check
+                const fRect = element.getBoundingClientRect();
+                const pRect = slidePot.getBoundingClientRect();
+                const winBottom = windowRect.bottom;
+
+                // Match vertical collision thresholds
+                if (fRect.bottom >= pRect.top && fRect.top <= pRect.bottom &&
+                    fRect.right >= pRect.left && fRect.left <= pRect.right) {
+                    
+                    // Element caught successfully
+                    handleCatch(emoji);
+                    element.remove();
+                    itemFalling = false;
+                    return;
+                }
+
+                // Element structural bottom miss logic
+                if (fRect.top >= (windowRect.height - 110)) {
+                    element.remove();
+                    itemFalling = false;
+                    return;
+                }
+
+                requestAnimationFrame(fall);
             }
-        });
 
-        // Touch handling for mobile devices
-        let activeTouchElement = null;
-
-        function touchStart(e) {
-            activeTouchElement = e.target;
-            e.target.style.position = 'absolute';
-            e.target.style.zIndex = '1000';
+            requestAnimationFrame(fall);
         }
 
-        function touchMove(e) {
-            if (!activeTouchElement) return;
-            e.preventDefault();
-            const touch = e.touches[0];
+        // Evaluate Caught Ingredients Metrics
+        function handleCatch(emoji) {
+            const recipe = recipes[currentRecipeIndex];
             
-            // Center the element under finger
-            activeTouchElement.style.left = (touch.clientX - 25) + 'px';
-            activeTouchElement.style.top = (touch.clientY - 25) + 'px';
-        }
-
-        function touchEnd(e) {
-            if (!activeTouchElement) return;
-            
-            const potRect = pot.getBoundingClientRect();
-            const touch = e.changedTouches[0];
-
-            // Reset positioning rules safely back into relative flow if needed
-            activeTouchElement.style.position = 'static';
-            
-            // Check bounding collisions with the pot
-            if (touch.clientX >= potRect.left && touch.clientX <= potRect.right &&
-                touch.clientY >= potRect.top && touch.clientY <= potRect.bottom) {
-                dropIngredient(activeTouchElement.getAttribute('data-icon'));
+            // Check if it's an illegal ingredient immediately to fail early or stack composition
+            if (recipe.wrong.includes(emoji)) {
+                gameLoopActive = false;
+                chefAvatar.innerText = "😞";
+                loseOverlay.style.display = 'flex';
+                return;
             }
-            
-            activeTouchElement = null;
-            loadRecipe(currentRecipeIndex);// do not reset on mobile release, keep the shelf intact 
-        }
 
-        function dropIngredient(icon) {
-            if (!addedIngredients.includes(icon)) {
-                addedIngredients.push(icon);
-                const item = document.createElement('div');
-                item.className = 'pot-item';
-                item.innerText = icon;
-                potInterior.appendChild(item);
+            if (recipe.required.includes(emoji) && !collectedIngredients.includes(emoji)) {
+                collectedIngredients.push(emoji);
                 
-                // Tiny visual response inside the bubble
-                chefBubble.innerText = "Yum! Keep tossing them in!";
+                // Add inline miniature visual update inside interface span tray
+                const indicator = document.createElement('div');
+                indicator.className = 'collected-indicator';
+                indicator.innerText = emoji;
+                contentsDisplay.appendChild(indicator);
+
+                // Verify win requirements criteria conditions met
+                if (collectedIngredients.length === recipe.required.length) {
+                    gameLoopActive = false;
+                    score += 100;
+                    scoreDisplay.innerText = `${score} pts`;
+
+                    // Push contextual properties to overlay data slots
+                    document.getElementById('win-title').innerText = recipe.title;
+                    document.getElementById('win-desc').innerText = recipe.desc;
+                    document.getElementById('win-location').innerText = recipe.location;
+                    winOverlay.style.display = 'flex';
+                } else {
+                    chefBubble.innerText = "Yum! Keep catching the right elements!";
+                }
             }
         }
 
-       // Recipe Submission validation (Updated with Frown & Reset)
-serveBtn.addEventListener('click', () => {
-    const currentRecipe = recipes[currentRecipeIndex];
-    const hasAll = currentRecipe.required.every(ing => addedIngredients.includes(ing));
-    const chefAvatar = document.querySelector('.character-chef .avatar');
+        // Progression Event Listeners
+        document.getElementById('retry-btn').onclick = () => {
+            loseOverlay.style.display = 'none';
+            loadLevel(currentRecipeIndex);
+        };
 
-    if (hasAll) {
-        score += 100;
-        scoreDisplay.innerText = `${score} pts`;
-        formOverlay.style.display = 'flex';
-    } else {
-        // 1. Make the chef frown
-        chefAvatar.innerText = "😞"; 
-        chefBubble.innerText = "Oh no, that's not quite right! Let's clear the pot and try again.";
-        
-        // 2. Temporarily disable the button during reset transition
-        serveBtn.disabled = true;
-        serveBtn.style.opacity = "0.5";
+        document.getElementById('next-level-btn').onclick = () => {
+            winOverlay.style.display = 'none';
+            const nextIndex = (currentRecipeIndex + 1) % recipes.length;
+            loadLevel(nextIndex);
+        };
 
-        // 3. Wait 2 seconds, then reset the recipe/pot
-        setTimeout(() => {
-            // Restore chef avatar to normal cooking face
-            chefAvatar.innerText = "👩🏽‍🍳"; 
-            
-            // Clear the pot and array data
-            potInterior.innerHTML = '';
-            addedIngredients = [];
-            
-            // Reset chef bubble back to original hint
-            chefBubble.innerText = currentRecipe.hint;
-            
-            // Re-enable serve button
-            serveBtn.disabled = false;
-            serveBtn.style.opacity = "1";
-        }, 2000); // 2000 milliseconds = 2 seconds
-    }
-});
-
-        // Save profile and reveal Match Profile card
-        saveProfileBtn.addEventListener('click', () => {
-            const nameVal = document.getElementById('p-name').value || "Friend";
-            const cultureVal = document.getElementById('p-culture').value || "Global Citizen";
-            
-            // Find corresponding structural match profile
-            const peer = peerProfiles.find(p => p.matchIndex === currentRecipeIndex) || peerProfiles[0];
-            
-            peerCard.innerHTML = `
-                <div class="profile-header">
-                    <div class="avatar">🍳</div>
-                    <div>
-                        <strong>${peer.name}</strong> <br>
-                        <span style="font-size:12px; color:#a05232;">Culture: ${peer.culture}</span>
-                    </div>
-                </div>
-                <p style="font-size: 13px;"><strong>Favorite dish:</strong> ${peer.favFood}</p>
-                <p style="font-size: 13px; margin-top:5px; color:#5ca374;">✨ They also cooked <strong>${recipes[currentRecipeIndex].title}</strong> just like you!</p>
-            `;
-
-            formOverlay.style.display = 'none';
-            peerOverlay.style.display = 'flex';
-        });
-
-        // Advance to next dish
-        nextLevelBtn.addEventListener('click', () => {
-            peerOverlay.style.display = 'none';
-            // Reset input values
-            document.getElementById('p-name').value = '';
-            document.getElementById('p-culture').value = '';
-            document.getElementById('p-food').value = '';
-            
-            // Move to next recipe circular loop
-            let nextIndex = (currentRecipeIndex + 1) % recipes.length;
-            loadRecipe(nextIndex);
-        });
-
-        // Start
-       loadRecipe(0);
+        // Initialize App Main Entry
+        loadLevel(0);
     </script>
 </body>
 </html>
