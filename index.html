@@ -891,44 +891,60 @@
 
         // Initialize Native Loop Entry One
         loadLevel(0);
-    </script>
-    <script>
-        //Feedback form
-        // Open Google Form when the player clicks the feedback box area
-        document.getElementById('feedback-like').onclick = openGoogleForm;
-        document.getElementById('feedback-wish').onclick = openGoogleForm;
+   
+        // ... (Keep all your game loops, level progressions, and catches here) ...
 
-        function openGoogleForm() {
-            // REPLACE THIS TEXT WITH YOUR ACTUAL GOOGLE FORM LINK:
-            const googleFormUrl = "https://docs.google.com/forms/d/e/1FAIpQLSd5HTtp_nbqCKOSlXYGU6j2l6v17nC9fPaNIzxtR0M_oYMxMw/viewform?usp=dialog";
+        // Wait until the DOM is completely parsed before binding click handlers
+        window.addEventListener('DOMContentLoaded', () => {
             
-            window.open(googleFormUrl, '_blank');
-        // Share Modal Router Configuration
-        const shareModal = document.getElementById('share-modal-overlay');
-        const gameUrl = encodeURIComponent(window.location.href);
-        const shareText = encodeURIComponent("Check out this awesome Cultural Kitchen Connect game! Help support our school project and cook fusion dishes! 🍽️✨");
+            // --- Feedback Routing Setup ---
+            const likeBtn = document.getElementById('feedback-like');
+            if (likeBtn) {
+                likeBtn.onclick = () => {
+                    const googleFormUrl = "https://docs.google.com/forms/d/e/YOUR_ACTUAL_FORM_ID/viewform";
+                    window.open(googleFormUrl, '_blank');
+                };
+            }
 
-        document.getElementById('open-share-btn').onclick = () => {
-            shareModal.style.display = 'flex';
-        };
+            // --- Sharing Overlay Setup ---
+            const shareModal = document.getElementById('share-modal-overlay');
+            const openShareBtn = document.getElementById('open-share-btn');
+            const closeShareBtn = document.getElementById('close-share-btn');
 
-        document.getElementById('close-share-btn').onclick = () => {
-            shareModal.style.display = 'none';
-        };
+            if (openShareBtn && shareModal) {
+                openShareBtn.onclick = () => shareModal.style.display = 'flex';
+            }
+            if (closeShareBtn && shareModal) {
+                closeShareBtn.onclick = () => shareModal.style.display = 'none';
+            }
 
-        // Deep Linking App Handlers
-        document.getElementById('share-wa').onclick = () => {
-            window.open(`https://api.whatsapp.com/send?text=${shareText}%20${gameUrl}`, '_blank');
-        };
+            // --- Platform API Deep Links (Fixed Typo) ---
+            const gameUrl = encodeURIComponent(window.location.href);
+            const shareText = encodeURIComponent("Check out this awesome game project! 🍽️✨");
 
-        document.getElementById('share-tg').onclick = () => {
-            window.open(`https://t.me/share/url?url=${gameUrl}&text=${shareText}`, '_blank');
-        };
+            const waBtn = document.getElementById('share-wa');
+            if (waBtn) {
+                waBtn.onclick = () => {
+                    window.open(`https://api.whatsapp.com/send?text=${shareText}%20${gameUrl}`, '_blank');
+                };
+            }
 
-        document.getElementById('share-copy').onclick = () => {
-            navigator.clipboard.writeText(window.location.href);
-            alert("Game link copied to your clipboard! Go paste it to your friends! 🎉");
-        };
+            const tgBtn = document.getElementById('share-tg');
+            if (tgBtn) {
+                tgBtn.onclick = () => {
+                    // Fixed: Cleaned up window.open syntax
+                    window.open(`https://t.me/share/url?url=${gameUrl}&text=${shareText}`, '_blank');
+                };
+            }
+
+            const copyBtn = document.getElementById('share-copy');
+            if (copyBtn) {
+                copyBtn.onclick = () => {
+                    navigator.clipboard.writeText(window.location.href);
+                    alert("Game link copied to clipboard! 🎉");
+                };
+            }
+        });
     </script>
 </body>
 <script type="module">
