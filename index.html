@@ -423,6 +423,7 @@
             display: none !important;
         }
     </style>
+    
 </head>
 <body>
 
@@ -516,8 +517,7 @@
                 <button class="btn-action btn-success" id="peer-done-btn" style="margin-top: 15px;">See My Kitchen Records ✨</button>
             </div>
         </div>
-
-        <div class="overlay" id="thankyou-overlay">
+<div class="overlay" id="thankyou-overlay">
             <div class="modal">
                 <h1 style="font-size:26px; color:var(--clay-pot); margin-bottom:8px;">Thank You! 🎉</h1>
                 <p style="text-align: center; font-size:13px; margin-bottom:15px;">You've explored unique food cultures, crossed boundaries, and tracked historical paths!</p>
@@ -526,8 +526,36 @@
                     <strong>Your Mastered Menu Archive:</strong>
                     <ul id="completed-recipes-list"></ul>
                 </div>
+
+                <div class="feedback-box" style="background: #fff3cd; border: 2px dashed #ffc107; padding: 12px; border-radius: 16px; margin-bottom: 15px; text-align: left;">
+                   <div class="feedback-box" style="background: #fff3cd; border: 2px dashed #ffc107; padding: 12px; border-radius: 16px; margin-bottom: 15px; text-align: center;">
+                    <strong style="display:block; margin-bottom: 8px; font-size: 14px; color: #856404;">✏️ Please give us Feedback🥺:</strong>
+                    <button id="feedback-like" class="btn-action" style="background: #ffc107; color: #856404; font-size: 12px; padding: 6px; margin-bottom: 6px;">
+                        Click here to tell us what you LIKED & WISHED! ⭐
+                    </button>
+                </div>
+                </div>
+
+                <button class="btn-action" id="open-share-btn" style="background: #e83e8c; box-shadow: 0 4px 0 #b21f66; margin-bottom: 12px; font-size: 16px; animation: textPulse 0.6s ease-in-out infinite alternate;">
+                    PLEASE SHARE THIS GAME! 🙏🥺
+                </button>
                 
-                <button class="btn-action btn-success" onclick="window.location.reload();">Play Again 🔄</button>
+                <button class="btn-action btn-success" onclick="window.location.reload();" style="margin-bottom: 10px;">Play Again 🔄</button>
+            </div>
+        </div>
+
+        <div class="overlay" id="share-modal-overlay" style="z-index: 200;">
+            <div class="modal" style="max-width: 320px;">
+                <h3 style="margin-bottom: 12px;">Share with Friends! 🌏</h3>
+                <p style="text-align:center; font-size: 12px; margin-bottom: 15px;">Help our cooking school project grow! Send it to your friends right now! 🥺✨</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <button class="btn-action" id="share-wa" style="background: #25D366; box-shadow: 0 4px 0 #1e9e4c;">Share via WhatsApp 💬</button>
+                    <button class="btn-action" id="share-tg" style="background: #0088cc; box-shadow: 0 4px 0 #006699;">Share via Telegram ✈️</button>
+                    <button class="btn-action" id="share-copy" style="background: #6c757d; box-shadow: 0 4px 0 #495057;">Copy Game Link 🔗</button>
+                </div>
+                
+                <button class="btn-action btn-retry" id="close-share-btn" style="margin-top: 15px; padding: 8px; font-size:13px;">Back ↩️</button>
             </div>
         </div>
 
@@ -864,5 +892,66 @@
         // Initialize Native Loop Entry One
         loadLevel(0);
     </script>
+    <script>
+        //Feedback form
+        // Open Google Form when the player clicks the feedback box area
+        document.getElementById('feedback-like').onclick = openGoogleForm;
+        document.getElementById('feedback-wish').onclick = openGoogleForm;
+
+        function openGoogleForm() {
+            // REPLACE THIS TEXT WITH YOUR ACTUAL GOOGLE FORM LINK:
+            const googleFormUrl = "https://docs.google.com/forms/d/e/1FAIpQLSd5HTtp_nbqCKOSlXYGU6j2l6v17nC9fPaNIzxtR0M_oYMxMw/viewform?usp=dialog";
+            
+            window.open(googleFormUrl, '_blank');
+        // Share Modal Router Configuration
+        const shareModal = document.getElementById('share-modal-overlay');
+        const gameUrl = encodeURIComponent(window.location.href);
+        const shareText = encodeURIComponent("Check out this awesome Cultural Kitchen Connect game! Help support our school project and cook fusion dishes! 🍽️✨");
+
+        document.getElementById('open-share-btn').onclick = () => {
+            shareModal.style.display = 'flex';
+        };
+
+        document.getElementById('close-share-btn').onclick = () => {
+            shareModal.style.display = 'none';
+        };
+
+        // Deep Linking App Handlers
+        document.getElementById('share-wa').onclick = () => {
+            window.open(`https://api.whatsapp.com/send?text=${shareText}%20${gameUrl}`, '_blank');
+        };
+
+        document.getElementById('share-tg').onclick = () => {
+            window.open(`https://t.me/share/url?url=${gameUrl}&text=${shareText}`, '_blank');
+        };
+
+        document.getElementById('share-copy').onclick = () => {
+            navigator.clipboard.writeText(window.location.href);
+            alert("Game link copied to your clipboard! Go paste it to your friends! 🎉");
+        };
+    </script>
 </body>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyCJITvncCYtG0HNsJoWYL4gKXRHilmjkBo",
+    authDomain: "melting-pot-907e6.firebaseapp.com",
+    projectId: "melting-pot-907e6",
+    storageBucket: "melting-pot-907e6.firebasestorage.app",
+    messagingSenderId: "170434666098",
+    appId: "1:170434666098:web:07b490d04a7e2f6c4e6ceb",
+    measurementId: "G-J8ZTRVJZFP"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
 </html>
